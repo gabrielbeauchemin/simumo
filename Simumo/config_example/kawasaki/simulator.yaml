@@ -1,0 +1,76 @@
+generals:
+  clock_dt: 1.0
+  end_time:
+    val: 2000
+  debugger:
+    use: true
+    width: 720
+    height: 720
+
+  random_speed: true
+  logging:
+    path: "./tmp_logs"
+    filenames:
+      - car_positions
+      - car_speed
+
+  seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
+
+
+map:
+  type: PolarFileMap
+  path: etc/aqua_bay_graph.json
+
+
+systems:
+
+  clock:
+    type: StandardClock
+
+  mobility:
+    type: StandardMobility
+
+  physic:
+    type: Acceleration
+
+  recorders:
+    - type : CarPositionRecorder
+      capture_freq: 50.0
+    - type: CarSpeedRecorder
+      capture_freq: 50.0
+
+
+
+entities:
+  - id: car1
+    type: vehicle
+    position: [[36600118, 36600120], 0.50]
+    destination: [[1501152602, 3753227376], 1]
+    speed: 8
+  - id: car1
+    type: vehicle
+    position: [[36600120, 36600125], 0.50]
+    destination: [[1501152602, 3753227376], 1]
+    speed: 8
+  - id: car1
+    type: vehicle
+    position: [[36600118, 36600120], 0.50]
+    destination: [[1501152602, 3753227376], 1]
+    speed: 16
+  - id: car1
+    type: vehicle
+    position: [[36600120, 36600125], 0.50]
+    destination: [[1501152602, 3753227376], 1]
+    speed: 16
+  - id: car1
+    type: vehicle
+    position: [[36600118, 36600120], 0.50]
+    destination: [[1501152602, 3753227376], 1]
+    speed: 24
+  - id: car1
+    type: vehicle
+    position: [[36600120, 36600125], 0.50]
+    destination: [[1501152602, 3753227376], 1]
+    speed: 24
+
+

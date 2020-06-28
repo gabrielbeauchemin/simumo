@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<header>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="jquery-ui.css">
+    <link rel="stylesheet" href="https://unpkg.com/openlayers/dist/ol.css">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/ol-popup@2.0.0/src/ol-popup.css"> -->
+    <link rel="stylesheet" href="layout.css">
+    <link rel="stylesheet" href="jquery-ui-slider-pips.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="jquery-ui.js"></script>
+    <script src="jquery-ui-slider-pips.js"></script>
+    <script src="https://unpkg.com/openlayers@4.4.2"></script>
+    <!-- <script src="https://unpkg.com/ol-popup@2.0.0"></script> -->
+    <script src="legend.js" type="text/javascript"></script>
+    <script src="tabs.js" type="text/javascript"></script>
+    <script src="timeline.js" type="text/javascript"></script>
+    <script src="updateVisualizationBox.js" type="text/javascript"></script>
+</header>
+
+<body style="margin:0px;">
+<div class="headerBox">
+    <nav role="navigation" class="nav">
+        <ul class="nav-items">
+            <img src="logoSimumo.png" class="logo">
+            <li class="nav-item">
+                <a href="/" class="nav-link"><span>Visualisation de cartes</span></a>
+            </li>
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link"><span>Metriques</span></a>
+                <nav class="submenu">
+                    <ul class="submenu-items">
+                        {% for metric in metrics %}
+                            <li class="submenu-item"><a href="#" class="submenu-link"
+                                                        onclick="updateVisualizationBox(this);return false;"
+                                                        data-logPath={{ "\"" +metric.logName + "\"" }} data-unit={{ "\"" +metric.unit + "\"" }}
+                                                        data-metricName={{ "\"" +metric.name + "\"" }}>
+                                {{ metric.name + '(' +metric.unitLabel + ')' }}
+                            </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </li>
+        </ul>
+    </nav>
+</div>
+<script src="menu.js"></script>
+
+<br>
+
+{#  global variables used by the visualisations#}
+<div id="visualizationsInfo">
+    <div id="legendColors">
+        {% for color in legend %}
+            <div class="legendColor"
+                 data-red={{ "\"" +color.red|string + "\"" }} data-green={{ "\"" +color.green|string + "\"" }}
+                 data-blue={{ "\"" +color.blue|string + "\"" }}></div>
+        {% endfor %}
+    </div>
+    <div id="ScalablePointsInfo">
+        <div id="ScalablePointsMin" hidden>1</div>
+        <div id="ScalablePointsMax" hidden>12</div>
+        <div id="ScalablePointsColor" data-red="160" data-green="82" data-blue="45" data-alpha="0.7"></div>
+    </div>
+</div>
+
+<div id="visualizations">
+    <div id="tabs">
+        <ul>
+            <li><a href="#" rel="ColoredPoints" class="selected" onclick="selectTab(this)">Points colorés</a></li>
+            <li><a href="#" rel="HeatMap" onClick="selectTab(this)">Heatmap</a></li>
+            <li><a href="#" rel="ScalablePoints" onClick="selectTab(this)">Points grosseurs variables</a></li>
+        </ul>
+
+        <div id="legendBox">
+            <h3 style="margin-top: -8px;">Légende</h3>
+            <div id="legendBoxContent"></div>
+        </div>
+        {% include 'OlMapTemplate.html' %}
+    </div>
+    <script type="text/javascript"> initTabs(); </script>
+</div>
+
+<br>
+<br>
+
+<div class="sliderPosition">
+    <div id="prevNext" hidden>
+    <a href="#" class="previous round" onclick="previousSliderRange()">&#8249; Previous</a>
+    <a href="#" class="next round" onclick="nextSliderRange()">Next &#8250;</a>
+</div>
+    <div id="flat-slider" class="unintialized"></div>
+</div>
+<br>
+
+
+
+<div id="sliderUnit"></div>
+
+
+</body>
+
+</html>

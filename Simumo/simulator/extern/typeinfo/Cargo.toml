@@ -1,0 +1,5 @@
+[package]
+name = "typeinfo"
+version = "0.1.0"
+authors = ["Jeremie Bigras-Dunberry <bigjerbd@gmail.com>"]
+edition = "2018"

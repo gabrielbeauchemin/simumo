@@ -1,0 +1,83 @@
+generals:
+  clock_dt: 1.0
+  end_time:
+    val: 1600
+  debugger:
+    use: true
+    width: 720
+    height: 720
+
+  logging:
+    path: "./tmp_logs"
+    filenames:
+      - car_positions
+      - car_speed
+
+  seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
+
+map:
+  type: PolarFileMap
+  path: etc/sherbrooke_graph.json
+
+systems:
+
+  clock:
+    type: StandardClock
+
+  mobility:
+    type: StandardMobility
+
+  physic:
+    type: Acceleration
+
+  recorders:
+    - type : CarPositionRecorder
+      capture_freq: 6.0
+    - type: CarSpeedRecorder
+      capture_freq: 6.0
+
+  spawner:
+    type: Frequency
+    min: 1
+    max: 3
+    start_locations:
+      - 5872015933
+      - 81474235
+      - 4291399599
+      - 4738061547
+      - 110285445
+      - 64010518
+      - 3646823269
+      - 110285457
+      - 255785981
+      - 2004727123
+      - 3728506124
+      - 110285459
+      - 120943775
+    end_locations:
+      - 115710646
+      - 4272197702
+      - 2280297025
+      - 4267279730
+      - 4291399625
+      - 1897554048
+
+entities:
+  - id: trafficlight01
+    type: trafficlight
+    light:
+      initial_color: GREEN
+      max_green_time: 5
+      max_yellow_time: 1.5
+      time: 3.5
+    position: [[81474235, 81474556], 0.0]
+    observable: trafficlight02
+  - id: trafficlight02
+    type: trafficlight
+    light:
+      initial_color: RED
+      max_green_time: 3
+      max_yellow_time: 1
+      time: 0
+    position: [[81474235, 81475573], 0.0]
+    observable: trafficlight01

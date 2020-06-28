@@ -1,0 +1,23 @@
+city: "Kawasaki"
+logs:
+    directory: "./tmp_logs"
+    metrics:
+        - name: "Positions Automobiles"
+          logName: "car_positions.ndjson"
+          unit: "Unit"
+          unitLabel: "Unité"
+        - name: "Vitesse Automobiles"
+          logName: "car_speed.ndjson"
+          unit: "MeterPerSecond"
+          unitLabel: "Mêtre par secondes"
+legends:
+    - red: 0
+      green: 255
+      blue: 0
+    - red: 255
+      green: 255
+      blue: 0
+    - red: 255
+      green: 0
+      blue: 0
+

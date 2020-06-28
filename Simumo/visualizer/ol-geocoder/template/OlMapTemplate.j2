@@ -1,0 +1,251 @@
+let olMap;
+let olVisualizationLayer;
+let lastFeaturesSelected = [];
+
+(function(win, doc) {
+
+  let olview = new ol.View({
+      center: [0, 0],
+      zoom: 3,
+      minZoom: 13,
+      maxZoom: 20
+    }),
+    baseLayer = new ol.layer.Tile({
+      source: new ol.source.OSM()
+    }),
+    map = new ol.Map({
+      target: doc.getElementById('map'),
+      view: olview,
+      layers: [baseLayer]
+    }),
+    popup = new ol.Overlay.Popup();
+
+  olMap = map; //keep access to map variable
+
+  //Instantiate with some options and add the Control
+  let geocoder = new Geocoder('nominatim', {
+    provider: 'osm',
+    targetType: 'glass-button',
+    lang: 'en',
+    placeholder: 'Search for ...',
+    limit: 5,
+    keepOpen: false,
+    initialLocation: {{initialLocation}}
+  });
+
+  map.addControl(geocoder);
+  map.addOverlay(popup);
+
+  //Reveal text label specifying the exact value of circle features when the mouse is on it
+  map.on('pointermove', function(e) {
+    //Remove the text label of the circle features that were clicked on before
+    if(olVisualizationLayer)
+    {
+      lastFeaturesSelected.forEach(function(entry) {
+      let style = entry.getStyle();
+      if(style)
+      {
+        style.setText('');
+      }
+    });
+    lastFeaturesSelected = [];
+
+      //Add text label style for the feature where the mouse is to add the exact value
+      map.forEachFeatureAtPixel(e.pixel, function(feature) {
+        if(feature.get("value") != null)
+        {
+          let style = feature.getStyle();
+          if(style)
+          {
+            style.setText(new ol.style.Text({
+              font: 'bold 14px Arial',
+              text: (Math.round(feature.get("reelValue") * 10) / 10).toString(),
+              fill: new ol.style.Fill({color: 'black'}),
+              offsetY: -15
+            }));
+            lastFeaturesSelected.push(feature);
+          }
+        }
+      });
+      olVisualizationLayer.getSource().refresh({force:true}); //refresh the layer for the new styles
+    }});
+})(window, document);
+
+//OpenLayers does not resize relative size map, so we need to update the
+//map div height and call map.udpateSize()
+function updateMapSize(){
+    if(olMap)
+    {
+        let height = document.getElementById("visualizations").clientHeight;
+        let width = document.getElementById("visualizations").clientWidth;
+        document.getElementById('map').style.height = height + "px";
+        document.getElementById('map').style.width = width + "px";
+        olMap.updateSize();
+        //legendBox top and left are in pixels so resizing cause problems
+        document.getElementById('legendBox').style.top = "6%";
+        document.getElementById('legendBox').style.left = "72%";
+    }
+}
+$(window).resize( updateMapSize);
+window.onload = updateMapSize;
+
+function componentToHex(c) {
+    let hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+function arrayRgbToHex(array) {
+  let hexArray = []
+  array.forEach(x => {hexArray.push(rgbToHex(x.r, x.g, x.b))});
+  return hexArray;
+}
+
+
+function getColor(color1, color2, interpolation)
+{
+  let diffR = color2.r - color1.r;
+  let diffG = color2.g - color1.g;
+  let diffB = color2.b - color1.b;
+  return {
+    r: color1.r + interpolation * diffR,
+    g: color1.g + interpolation * diffG,
+    b: color1.b + interpolation * diffB
+  };
+}
+
+function getColorFromGradient(gradient, interpolation)
+{
+  if(interpolation == 0)
+  {
+    return gradient[0];
+  }
+  else if(interpolation == 1)
+  {
+    return gradient[gradient.length - 1];
+  }
+  else {
+    //find the two colors to interpolate
+    let step = 1.0 / (gradient.length -1);
+    let indexFirstColor = Math.floor(interpolation/step);
+    let interpolationBetweenTwoColors = (interpolation - (indexFirstColor * step))  /  step;
+    return getColor(gradient[indexFirstColor], gradient[indexFirstColor+1], interpolationBetweenTwoColors)
+  }
+}
+
+function addColorToPoints(points, gradient)
+{
+  points.forEach( p => {
+    let circleColor = getColorFromGradient(gradient, p.get('value'));
+    let circleStyle = new ol.style.Style({
+      image: new ol.style.Circle({
+          radius: 6,
+          fill: new ol.style.Fill({
+              color: `rgba(${circleColor.r},${circleColor.g},${circleColor.b},0.9)`
+          })
+    })});
+    p.setStyle(circleStyle);
+  });
+}
+
+function addScalablePointsStyle(points, min, max, pointColor)
+{
+  points.forEach( p => {
+    let pointSize = 2 + p.get('value') * (max - min);
+    let circleStyle = new ol.style.Style({
+      image: new ol.style.Circle({
+          radius: pointSize,
+          fill: new ol.style.Fill({
+              color: `rgba(${pointColor.r},${pointColor.g},${pointColor.b}, ${pointColor.b})`
+          }),
+          stroke : new ol.style.Stroke({color: "rgba(255,255,255)"})
+    })});
+    p.setStyle(circleStyle);
+  });
+}
+
+function getPoint(point)
+{
+  function lonlatToPoint(x,y) {
+    let pointCoordonates = ol.proj.transform([x, y], 'EPSG:4326','EPSG:900913');
+    return new ol.geom.Point([pointCoordonates[0], pointCoordonates[1]]);
+  }
+
+  let p = new ol.Feature({
+    'geometry': lonlatToPoint(point['lon'],point['lat']),
+    'value' : point['interpolation'],
+    'reelValue' : point['value'],
+    'unit' : point['unit']
+  });
+  return p;
+}
+
+function updateVisualizationLayer(points, style, gradient)
+{
+  if(olVisualizationLayer)
+  {
+    olMap.removeLayer(olVisualizationLayer);
+  }
+
+  let features = new Array(points.length);
+  for(let i = 0; i < points.length; ++i)
+  {
+    features[i] = getPoint(points[i]);
+  }
+
+  if(style == "coloredPoints")
+  {
+    addColorToPoints(features, gradient)
+    let pointsSource = new ol.source.Vector({
+      features: features,
+    });
+
+    let colorsPointsLayer = new ol.layer.Vector({
+      source: pointsSource
+    });
+    olVisualizationLayer = colorsPointsLayer; //keep access to map variable
+    olMap.addLayer(colorsPointsLayer);
+  }
+  else if(style == "heatMap")
+  {
+    let pointsSource = new ol.source.Vector({
+      features: features,
+    });
+
+    let heatMapLayer = new ol.layer.Heatmap({
+        source: pointsSource,
+        blur: 18,     //interesting between 10 and 30
+        radius: 6,   //interesting between 3 and 10
+        gradient: arrayRgbToHex(gradient),
+        weight: 'value'
+      });
+    olVisualizationLayer = heatMapLayer; //keep access to map variable
+    olMap.addLayer(heatMapLayer);
+  }
+  else if(style == "scalablePoints")
+  {
+    const minSize = parseInt(document.getElementById("ScalablePointsMin").innerHTML);
+    const maxSize = parseInt(document.getElementById("ScalablePointsMax").innerHTML);
+    let colorPointDiv = document.getElementById("ScalablePointsColor");
+    let colorPoint = {
+      r: parseInt(colorPointDiv.getAttribute('data-red')),
+      g: parseInt(colorPointDiv.getAttribute('data-green')),
+      b: parseInt(colorPointDiv.getAttribute('data-blue')),
+      a: parseInt(colorPointDiv.getAttribute('data-alpha'))
+    };
+
+    addScalablePointsStyle(features, minSize, maxSize, colorPoint);
+    let pointsSource = new ol.source.Vector({
+      features: features,
+    });
+
+    let colorsPointsLayer = new ol.layer.Vector({
+      source: pointsSource
+    });
+    olVisualizationLayer = colorsPointsLayer; //keep access to map variable
+    olMap.addLayer(colorsPointsLayer);
+  }
+}

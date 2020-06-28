@@ -1,0 +1,62 @@
+generals:
+  clock_dt: 1.0
+  end_time:
+    val: 400
+  debugger:
+    use: true
+    width: 720
+    height: 720
+
+  random_speed: true
+  logging:
+    path: "./tmp_logs"
+    filenames:
+      - car_positions
+      - car_speed
+
+  seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
+
+map:
+  type: PolarFileMap
+  path: etc/montreal_graph.json
+
+systems:
+
+  clock:
+    type: StandardClock
+
+  mobility:
+    type: StandardMobility
+
+  physic:
+    type: Acceleration
+
+  recorders:
+    - type : CarPositionRecorder
+      capture_freq: 10.0
+    - type: CarSpeedRecorder
+      capture_freq: 10.0
+
+  spawner:
+      type: Frequency
+      min: 2
+      max: 5
+      start_locations:
+        - 1721713124
+      end_locations:
+        - 3889311265
+        - 4514575254
+        - 6147723582
+        - 5054900110
+        - 4515093893
+        - 3690601962
+        - 6139605433
+        - 4105420036
+        - 2379217362
+        - 3167658888
+        - 4514575268
+        - 1733719307
+        - 3998269913
+        - 217718264
+        - 217681798
+

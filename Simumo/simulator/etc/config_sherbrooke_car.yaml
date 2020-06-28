@@ -1,0 +1,166 @@
+generals:
+  clock_dt: 0.25
+  end_time:
+    val: 1000.5
+  debugger:
+    use: true
+    width: 720
+    height: 720
+
+  random_speed: true
+  logging:
+    path: "./tmp_logs"
+    filenames:
+      - car_positions
+      - car_speed
+
+
+  seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
+
+#map:
+#  type: OsmGraph
+#  latitude: 45.40008
+#  longitude: -71.89908
+#  zoom: 1200
+
+map:
+  type: PolarFileMap
+  path: etc/sherbrooke_graph.json
+
+systems:
+  agents:
+    - type: Accelerating
+
+  clock:
+    type: StandardClock
+
+
+  mobility:
+    type: StandardMobility
+
+  physic:
+    type: Acceleration
+
+
+  recorders:
+    - type: CarPositionRecorder
+      capture_freq: 1.0
+    - type: CarSpeedRecorder
+      capture_freq: 1.0
+
+entities:
+  - id: car01
+    type: vehicle
+    position: [[82741927, 1038873140], 0.5]
+    destination: [[3969429274, 3969429277], 0.25]
+    speed: 2
+  - id: car02
+    type: vehicle
+    position: [[115719121, 5931385611], 0.5]
+    destination: [[3969429297, 3969429276], 0.35]
+    speed: 2
+  - id: car03
+    type: vehicle
+    position: [[115709195, 115710016], 0.5]
+    destination: [[3969429275, 3969429279],0.75]
+    speed: 2
+  - id: car04
+    type: vehicle
+    position: [[115709195, 115709192], 0.5]
+    destination: [[3969429278, 3969429275], 0.5]
+    speed: 2
+  - id: car04
+    type: vehicle
+    position: [[115710016, 115718913], 0.5]
+    destination: [[2552590805, 4738121179], 0.5]
+    speed: 2
+  - id: car05
+    type: vehicle
+    position: [[115710016, 115710015], 0.5]
+    destination: [[2552590805, 82741917], 0.5]
+    speed: 2
+  - id: car05
+    type: vehicle
+    position: [[115717861, 362710293], 0.5]
+    destination: [[2552590805, 1757685864], 0.5]
+    speed: 2
+  - id: car06
+    type: vehicle
+    position: [[81485499, 1852176859], 0.5]
+    destination: [[2552590805, 120951507], 0.5]
+    speed: 2
+  - id: car07
+    type: vehicle
+    position: [[81485499, 115717861], 0.5]
+    destination: [[120948215, 82753335], 0.5]
+    speed: 2
+  - id: car08
+    type: vehicle
+    position: [[3646823291, 81485499], 0.5]
+    destination: [[112264004, 4738061558], 0.5]
+    speed: 2
+  - id: car09
+    type: vehicle
+    position: [[3646823292, 3646823291], 0.5]
+    destination: [[112264004, 4738061558], 0.5]
+    speed: 2
+  - id: car10
+    type: vehicle
+    position: [[112264004, 4738061558], 0.5]
+    destination: [[3646823292, 3646823291], 0.5]
+    speed: 2
+  - id: car09
+    type: vehicle
+    position: [[3646823292, 3646823291], 0.5]
+    destination: [[112264004, 4738061558], 0.5]
+    speed: 2
+  - id: car10
+    type: vehicle
+    position: [[112264004, 4738061558], 0.5]
+    destination: [[81485499, 115717861], 0.5]
+    speed: 2
+  - id: car11
+    type: vehicle
+    position: [[120948215, 82753335], 0.5]
+    destination: [[81485499, 1852176859], 0.5]
+    speed: 2
+  - id: car12
+    type: vehicle
+    position: [[2552590805, 120951507], 0.5]
+    destination: [[115717861, 362710293], 0.5]
+    speed: 2
+  - id: car13
+    type: vehicle
+    position: [[2552590805, 1757685864], 0.5]
+    destination: [[115710016, 115710015], 0.5]
+    speed: 2
+  - id: car14
+    type: vehicle
+    position: [[2552590805, 82741917], 0.5]
+    destination: [[115710016, 115718913], 0.5]
+    speed: 2
+  - id: car15
+    type: vehicle
+    position: [[2552590805, 4738121179], 0.5]
+    destination: [[115709195, 115709192], 0.5]
+    speed: 2
+  - id: car16
+    type: vehicle
+    position: [[3969429278, 3969429275], 0.5]
+    destination: [[115709195, 115710016], 0.5]
+    speed: 2
+  - id: car17
+    type: vehicle
+    position: [[3969429275, 3969429279],0.75]
+    destination: [[115719121, 5931385611], 0.5]
+    speed: 2
+  - id: car18
+    type: vehicle
+    position: [[3969429297, 3969429276], 0.35]
+    destination: [[82741927, 1038873140], 0.5]
+    speed: 2
+  - id: car19
+    type: vehicle
+    position: [[3969429274, 3969429277], 0.25]
+    destination: [[82741927, 1038873140], 0.5]
+    speed: 2

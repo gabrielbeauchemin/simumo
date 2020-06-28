@@ -1,0 +1,66 @@
+generals:
+  clock_dt: 1.0
+  end_time:
+    val: 1000
+  debugger:
+    use: true
+    width: 720
+    height: 720
+
+  random_speed: true
+  logging:
+    path: "./tmp_logs"
+    filenames:
+      - car_positions
+      - car_speed
+
+  seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
+
+map:
+  type: OsmGraph
+  latitude: 45.40008
+  longitude: -71.89908
+  zoom: 1200
+
+#map:
+#  type: PolarFileMap
+#  path: etc/sherbrooke_graph.json
+
+systems:
+  agents:
+    - type: Accelerating
+
+  clock:
+    type: StandardClock
+
+  mobility:
+    type: StandardMobility
+
+  physic:
+    type: Acceleration
+
+  spawner:
+    type: Frequency
+    min: 1
+    max: 3
+    start_locations:
+      - 5872015933
+      - 81474235
+      - 4291399599
+      - 4738061547
+      - 110285445
+      - 64010518
+      - 3646823269
+      - 110285457
+      - 255785981
+      - 2004727123
+      - 3728506124
+      - 110285459
+      - 120943775
+    end_locations:
+      - 115710646
+      - 4272197702
+      - 2280297025
+      - 4267279730
+      - 4291399625
+      - 1897554048

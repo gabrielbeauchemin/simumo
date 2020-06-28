@@ -1,0 +1,32 @@
+generals:
+  clock_dt: 0.025
+  end_time:
+    val: 1200
+  debugger:
+    use: true
+    width: 720
+    height: 720
+
+  seed: 055c1509-cf2e-499a-9c79-e85ace6e654d
+
+map:
+  type: CartFileMap
+  path: etc/triangle_graph.json
+
+systems:
+
+  clock:
+    type: StandardClock
+
+  mobility:
+    type: StandardMobility
+
+  physic:
+    type: Acceleration
+
+entities:
+  - id: car01
+    type: vehicle
+    position: [[2, 3], 0]
+    destination: [[4, 5], 0.90]
+    speed: 0.2
